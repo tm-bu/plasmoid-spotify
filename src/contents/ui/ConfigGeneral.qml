@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import QtQuick.Dialogs
 import org.kde.kirigami as Kirigami
 import org.kde.kcmutils as KCM
 
@@ -10,6 +11,9 @@ KCM.SimpleKCM {
     property int cfg_lyricsFontSizeDefault
     property bool cfg_alternativeLineHeightCalculationDefault
     property string cfg_lyricsFontFamilyDefault
+    property string cfg_lyricsHighlightColorDefault
+    property int cfg_lyricsOffsetMsDefault
+    property string cfg_lyricsScrollModeDefault
 
     property bool cfg_showAlbumCoverDefault
     property bool cfg_fetchAlbumCoverHttpsDefault
@@ -32,6 +36,9 @@ KCM.SimpleKCM {
     property alias cfg_lyricsFontSize: lyricsFontSize.value
     property alias cfg_alternativeLineHeightCalculation: alternativeLineHeightCalculation.checked
     property alias cfg_lyricsFontFamily: lyricsFontFamily.currentText
+    property alias cfg_lyricsHighlightColor: lyricsHighlightColorField.text
+    property alias cfg_lyricsOffsetMs: lyricsOffsetMs.value
+    property alias cfg_lyricsScrollMode: lyricsScrollMode.currentValue
 
     property alias cfg_showAlbumCover: showAlbumCover.checked
     property alias cfg_fetchAlbumCoverHttps: fetchAlbumCoverHttps.checked
@@ -163,6 +170,82 @@ KCM.SimpleKCM {
                     stepSize: 1
                     Layout.alignment: Qt.AlignLeft
                 }
+            }
+
+            RowLayout {
+                Layout.alignment: Qt.AlignLeft
+                spacing: Kirigami.Units.smallSpacing
+                Layout.leftMargin: 20
+                enabled: showLyrics.checked
+
+                Label {
+                    text: "Non-current line color:"
+                }
+
+                TextField {
+                    id: lyricsHighlightColorField
+                    Layout.preferredWidth: 110
+                }
+
+                Rectangle {
+                    width: 18
+                    height: 18
+                    radius: 3
+                    color: lyricsHighlightColorField.text
+                    border.width: 1
+                    border.color: Kirigami.Theme.textColor
+                }
+
+                Button {
+                    text: "Pick"
+                    onClicked: lyricsHighlightColorDialog.open()
+                }
+            }
+
+            RowLayout {
+                Layout.alignment: Qt.AlignLeft
+                spacing: Kirigami.Units.smallSpacing
+                Layout.leftMargin: 20
+                enabled: showLyrics.checked
+
+                Label {
+                    text: "Lyrics offset (ms):"
+                }
+
+                SpinBox {
+                    id: lyricsOffsetMs
+                    from: -3000
+                    to: 3000
+                    stepSize: 50
+                }
+            }
+
+            RowLayout {
+                Layout.alignment: Qt.AlignLeft
+                spacing: Kirigami.Units.smallSpacing
+                Layout.leftMargin: 20
+                enabled: showLyrics.checked
+
+                Label {
+                    text: "Lyrics scroll:"
+                }
+
+                ComboBox {
+                    id: lyricsScrollMode
+                    textRole: "text"
+                    valueRole: "value"
+                    model: [
+                        { value: "smooth", text: "Smooth" },
+                        { value: "snap", text: "Snap" }
+                    ]
+                    Component.onCompleted: setComboIndexByValue(lyricsScrollMode, plasmoid.configuration.lyricsScrollMode)
+                }
+            }
+
+            ColorDialog {
+                id: lyricsHighlightColorDialog
+                selectedColor: lyricsHighlightColorField.text
+                onAccepted: lyricsHighlightColorField.text = selectedColor.toString()
             }
 
             Rectangle {

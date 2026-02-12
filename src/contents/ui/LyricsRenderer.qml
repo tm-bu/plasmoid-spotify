@@ -62,7 +62,7 @@ Text {
                 if (i === currentLineIndex || !highlight) {
                     builder += line.text;
                 } else {
-                    builder += `<span style="color:gray">${line.text}</span>`;
+                    builder += `<span style="color:${plasmoid.configuration.lyricsHighlightColor}">${line.text}</span>`;
                 }
 
                 if (i < lyrics.length - 1) {
@@ -86,7 +86,9 @@ Text {
         }
 
         if (textElement.parent !== null && lineCount > 0) {
-            if (animated) {
+            let snapMode = plasmoid.configuration.lyricsScrollMode === "snap";
+
+            if (animated && !snapMode) {
                 animation.from = currentY;
                 animation.to = calculateTargetY();
                 animation.start()
@@ -118,7 +120,9 @@ Text {
             return -1;
         }
 
-        let position = spotify.getDaemonPosition() / 1_000_000 + offset;
+        let position = spotify.getDaemonPosition() / 1_000_000
+            + offset
+            + (plasmoid.configuration.lyricsOffsetMs / 1000);
         let target = -1;
         for (let i = 0; i < lyrics.length; i++) {
             if (lyrics[i].time <= position) {
