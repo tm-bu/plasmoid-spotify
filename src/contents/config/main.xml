@@ -71,10 +71,6 @@
             <label>Artist Font Family</label>
             <default>Noto Sans</default>
         </entry>
-        <entry name="showPlaybackControls" type="Bool">
-            <label>Show playback controls on hover</label>
-            <default>false</default>
-        </entry>
         <entry name="leftClickAction" type="String">
             <label>Left click action</label>
             <default>raise</default>

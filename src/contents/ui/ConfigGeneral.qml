@@ -21,7 +21,6 @@ KCM.SimpleKCM {
     property int cfg_artistFontSizeDefault
     property string cfg_artistFontFamilyDefault
 
-    property bool cfg_showPlaybackControlsDefault
     property string cfg_leftClickActionDefault
     property string cfg_middleClickActionDefault
     property string cfg_rightClickActionDefault
@@ -44,7 +43,6 @@ KCM.SimpleKCM {
     property alias cfg_artistFontSize: artistFontSize.value
     property alias cfg_artistFontFamily: artistFontFamily.currentText
 
-    property alias cfg_showPlaybackControls: showPlaybackControls.checked
     property alias cfg_leftClickAction: leftClickAction.currentValue
     property alias cfg_middleClickAction: middleClickAction.currentValue
     property alias cfg_rightClickAction: rightClickAction.currentValue
@@ -313,13 +311,6 @@ KCM.SimpleKCM {
                 level: 3
                 Layout.alignment: Qt.AlignLeft
                 Layout.topMargin: Kirigami.Units.largeSpacing
-            }
-
-            CheckBox {
-                id: showPlaybackControls
-                text: "Show playback controls on album cover hover"
-                Layout.alignment: Qt.AlignLeft
-                Layout.leftMargin: Kirigami.Units.largeSpacing
             }
 
             RowLayout {
