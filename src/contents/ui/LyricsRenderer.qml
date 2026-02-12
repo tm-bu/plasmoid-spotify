@@ -59,7 +59,9 @@ Text {
 
         if (lyrics !== null && lyrics) {
             lyrics.forEach((line, i) => {
-                if (i === currentLineIndex || !highlight) {
+                if (i === currentLineIndex) {
+                    builder += `<span style="color:${plasmoid.configuration.lyricsCurrentLineColor}">${line.text}</span>`;
+                } else if (!highlight) {
                     builder += line.text;
                 } else {
                     builder += `<span style="color:${plasmoid.configuration.lyricsHighlightColor}">${line.text}</span>`;
