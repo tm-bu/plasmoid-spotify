@@ -25,6 +25,20 @@
             <label>Lyrics Font Family</label>
             <default>Noto Sans</default>
         </entry>
+        <entry name="lyricsHighlightColor" type="String">
+            <label>Lyrics highlight color</label>
+            <default>#808080</default>
+        </entry>
+        <entry name="lyricsOffsetMs" type="Int">
+            <label>Lyrics timing offset in milliseconds</label>
+            <default>0</default>
+            <min>-3000</min>
+            <max>3000</max>
+        </entry>
+        <entry name="lyricsScrollMode" type="String">
+            <label>Lyrics scroll mode</label>
+            <default>smooth</default>
+        </entry>
         <entry name="showAlbumCover" type="Bool">
             <label>Show album cover</label>
             <default>true</default>
@@ -70,10 +84,6 @@
         <entry name="artistFontFamily" type="String">
             <label>Artist Font Family</label>
             <default>Noto Sans</default>
-        </entry>
-        <entry name="showPlaybackControls" type="Bool">
-            <label>Show playback controls on hover</label>
-            <default>false</default>
         </entry>
         <entry name="leftClickAction" type="String">
             <label>Left click action</label>
