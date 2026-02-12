@@ -1,5 +1,6 @@
 import QtQuick 2.15
 import QtQuick.Layouts 1.15
+import QtQuick.Controls 2.15
 import org.kde.plasma.plasmoid
 import org.kde.kirigami as Kirigami
 import Qt5Compat.GraphicalEffects
@@ -13,7 +14,7 @@ PlasmoidItem {
     Layout.preferredWidth: row.implicitWidth
     Layout.preferredHeight: row.implicitHeight
 
-    readonly property int volumeStep: 2
+    readonly property real volumeStep: plasmoid.configuration.volumeStepPercent / 100
 
     /* Lyrics LRC library */
     LyricsLrcLib {
@@ -48,8 +49,8 @@ PlasmoidItem {
     /* Progress bar updater */
     Timer {
         id: timer
-        interval: 1000;
-        running: spotify && spotify.playing;
+        interval: 1000
+        running: spotify && spotify.playing
         repeat: true
         onTriggered: () => {
             updateProgressIndicator()
@@ -58,30 +59,39 @@ PlasmoidItem {
 
     /* Mouse click handling */
     MouseArea {
+        id: interactionMouseArea
         z: 100
         anchors.fill: parent
-        acceptedButtons: Qt.LeftButton | Qt.MiddleButton
+        acceptedButtons: Qt.LeftButton | Qt.MiddleButton | Qt.RightButton
         cursorShape: spotify && spotify.canRaise ? Qt.PointingHandCursor : Qt.ArrowCursor
         hoverEnabled: true
 
         onClicked: (mouse) => {
-            switch (mouse.button) {
-                case Qt.MiddleButton:
-                    spotify.togglePlayback()
-                    break
-                case Qt.LeftButton:
-                    if (spotify.canRaise) {
-                        spotify.raise()
-                    }
-                    break
+            if (mouse.button === Qt.LeftButton) {
+                executeClickAction(plasmoid.configuration.leftClickAction)
+            } else if (mouse.button === Qt.MiddleButton) {
+                executeClickAction(plasmoid.configuration.middleClickAction)
+            } else if (mouse.button === Qt.RightButton) {
+                executeClickAction(plasmoid.configuration.rightClickAction)
             }
         }
 
         onWheel: (wheel) => {
-            if (wheel.angleDelta.y > 0) {
-                spotify.changeVolume(volumeStep / 100, true)
-            } else {
-                spotify.changeVolume(-volumeStep / 100, true)
+            if (plasmoid.configuration.wheelAction === "seek") {
+                if (wheel.angleDelta.y > 0) {
+                    spotify.next()
+                } else {
+                    spotify.previous()
+                }
+                return
+            }
+
+            if (plasmoid.configuration.wheelAction === "volume") {
+                if (wheel.angleDelta.y > 0) {
+                    spotify.changeVolume(volumeStep, true)
+                } else {
+                    spotify.changeVolume(-volumeStep, true)
+                }
             }
         }
     }
@@ -112,7 +122,6 @@ PlasmoidItem {
             Layout.rightMargin: 5
             Layout.fillWidth: false
             fillMode: Image.PreserveAspectFit
-
 
             property string fallbackSource: "../assets/icon.svg"
             property string lastAttemptedSource: ""
@@ -179,6 +188,36 @@ PlasmoidItem {
                     color: "#1db954"
                 }
             }
+
+            Item {
+                anchors.fill: parent
+                visible: plasmoid.configuration.showPlaybackControls && interactionMouseArea.containsMouse && spotify.ready
+
+                Rectangle {
+                    anchors.fill: parent
+                    color: "#55000000"
+                }
+
+                RowLayout {
+                    anchors.centerIn: parent
+                    spacing: Kirigami.Units.smallSpacing
+
+                    RoundButton {
+                        text: "⏮"
+                        onClicked: spotify.previous()
+                    }
+
+                    RoundButton {
+                        text: spotify.playing ? "⏸" : "▶"
+                        onClicked: spotify.togglePlayback()
+                    }
+
+                    RoundButton {
+                        text: "⏭"
+                        onClicked: spotify.next()
+                    }
+                }
+            }
         }
 
         /* Song information */
@@ -231,6 +270,27 @@ PlasmoidItem {
         }
     }
 
+    function executeClickAction(action) {
+        switch (action) {
+            case "playPause":
+                spotify.togglePlayback()
+                break
+            case "next":
+                spotify.next()
+                break
+            case "previous":
+                spotify.previous()
+                break
+            case "raise":
+                if (spotify.canRaise) {
+                    spotify.raise()
+                }
+                break
+            default:
+                break
+        }
+    }
+
     function updateProgressIndicator() {
         if (spotify.ready) {
             progressIndicator.width = Math.min(1, (spotify.getDaemonPosition() / spotify.length)) * progress.width
@@ -240,32 +300,32 @@ PlasmoidItem {
     function truncateText(text, maxLen) {
         return text && text.length > maxLen
             ? text.slice(0, maxLen - 3) + "..."
-            : text;
+            : text
     }
 
     /* Artwork update handler */
     function updateArtwork() {
         if (spotify.ready) {
-            let url = spotify.artworkUrl;
+            let url = spotify.artworkUrl
             if (url && url.startsWith("https://") && !plasmoid.configuration.fetchAlbumCoverHttps) {
-                url = url.replace("https://", "http://");
+                url = url.replace("https://", "http://")
             }
-            artwork.source = url || artwork.fallbackSource;
+            artwork.source = url || artwork.fallbackSource
         }
     }
 
     /* Lyrics update handler */
     function updateLyrics() {
         if (spotify && spotify.ready) {
-            let requestedTrack = spotify.track;
-            let requestedArtist = spotify.artist;
+            let requestedTrack = spotify.track
+            let requestedArtist = spotify.artist
 
-            lyricsRenderer.lyrics = null;
+            lyricsRenderer.lyrics = null
 
             lyricsLrcLib.fetchLyrics(spotify.track, spotify.artist, spotify.album)
             .then(lyrics => {
                 if (widget && requestedTrack === spotify.track && requestedArtist === spotify.artist) {
-                    lyricsRenderer.lyrics = lyrics;
+                    lyricsRenderer.lyrics = lyrics
                 }
             })
         }

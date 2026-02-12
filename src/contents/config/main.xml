@@ -71,5 +71,31 @@
             <label>Artist Font Family</label>
             <default>Noto Sans</default>
         </entry>
+        <entry name="showPlaybackControls" type="Bool">
+            <label>Show playback controls on hover</label>
+            <default>false</default>
+        </entry>
+        <entry name="leftClickAction" type="String">
+            <label>Left click action</label>
+            <default>raise</default>
+        </entry>
+        <entry name="middleClickAction" type="String">
+            <label>Middle click action</label>
+            <default>playPause</default>
+        </entry>
+        <entry name="rightClickAction" type="String">
+            <label>Right click action</label>
+            <default>none</default>
+        </entry>
+        <entry name="wheelAction" type="String">
+            <label>Mouse wheel action</label>
+            <default>volume</default>
+        </entry>
+        <entry name="volumeStepPercent" type="Int">
+            <label>Volume step percentage</label>
+            <default>2</default>
+            <min>1</min>
+            <max>10</max>
+        </entry>
     </group>
 </kcfg>
