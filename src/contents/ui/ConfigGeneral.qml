@@ -12,7 +12,6 @@ KCM.SimpleKCM {
     property bool cfg_alternativeLineHeightCalculationDefault
     property string cfg_lyricsFontFamilyDefault
     property string cfg_lyricsHighlightColorDefault
-    property string cfg_lyricsCurrentLineColorDefault
     property int cfg_lyricsOffsetMsDefault
     property string cfg_lyricsScrollModeDefault
 
@@ -38,7 +37,6 @@ KCM.SimpleKCM {
     property alias cfg_alternativeLineHeightCalculation: alternativeLineHeightCalculation.checked
     property alias cfg_lyricsFontFamily: lyricsFontFamily.currentText
     property alias cfg_lyricsHighlightColor: lyricsHighlightColorField.text
-    property alias cfg_lyricsCurrentLineColor: lyricsCurrentLineColorField.text
     property alias cfg_lyricsOffsetMs: lyricsOffsetMs.value
     property alias cfg_lyricsScrollMode: lyricsScrollMode.currentValue
 
@@ -181,36 +179,6 @@ KCM.SimpleKCM {
                 enabled: showLyrics.checked
 
                 Label {
-                    text: "Current line color:"
-                }
-
-                TextField {
-                    id: lyricsCurrentLineColorField
-                    Layout.preferredWidth: 110
-                }
-
-                Rectangle {
-                    width: 18
-                    height: 18
-                    radius: 3
-                    color: lyricsCurrentLineColorField.text
-                    border.width: 1
-                    border.color: Kirigami.Theme.textColor
-                }
-
-                Button {
-                    text: "Pick"
-                    onClicked: lyricsCurrentLineColorDialog.open()
-                }
-            }
-
-            RowLayout {
-                Layout.alignment: Qt.AlignLeft
-                spacing: Kirigami.Units.smallSpacing
-                Layout.leftMargin: 20
-                enabled: showLyrics.checked
-
-                Label {
                     text: "Non-current line color:"
                 }
 
@@ -272,12 +240,6 @@ KCM.SimpleKCM {
                     ]
                     Component.onCompleted: setComboIndexByValue(lyricsScrollMode, plasmoid.configuration.lyricsScrollMode)
                 }
-            }
-
-            ColorDialog {
-                id: lyricsCurrentLineColorDialog
-                selectedColor: lyricsCurrentLineColorField.text
-                onAccepted: lyricsCurrentLineColorField.text = selectedColor.toString()
             }
 
             ColorDialog {

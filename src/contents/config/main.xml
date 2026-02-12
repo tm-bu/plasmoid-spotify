@@ -29,10 +29,6 @@
             <label>Lyrics highlight color</label>
             <default>#808080</default>
         </entry>
-        <entry name="lyricsCurrentLineColor" type="String">
-            <label>Lyrics current line color</label>
-            <default>#ffffff</default>
-        </entry>
         <entry name="lyricsOffsetMs" type="Int">
             <label>Lyrics timing offset in milliseconds</label>
             <default>0</default>
