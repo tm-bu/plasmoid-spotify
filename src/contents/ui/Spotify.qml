@@ -68,6 +68,18 @@ QtObject {
         }
     }
 
+    function previous() {
+        if (ready) {
+            player.Previous()
+        }
+    }
+
+    function next() {
+        if (ready) {
+            player.Next()
+        }
+    }
+
     function changeVolume(delta, showOSD) {
         if (ready) {
             player.changeVolume(delta, showOSD);

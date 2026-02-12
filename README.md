@@ -48,3 +48,8 @@ This project was inspired by:
 
 - [lyrics-on-panel](https://github.com/KangweiZhu/lyrics-on-panel)
 - [plasmusic-toolbar](https://github.com/ccatterina/plasmusic-toolbar)
+
+## Clean roadmap
+
+See `CLEAN_IMPLEMENTATION_SPEC.md` for a focused v1–v3 plan that prioritizes functionality and minimal UI clutter.
+
