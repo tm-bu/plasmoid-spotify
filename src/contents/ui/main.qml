@@ -1,6 +1,5 @@
 import QtQuick 2.15
 import QtQuick.Layouts 1.15
-import QtQuick.Controls 2.15
 import org.kde.plasma.plasmoid
 import org.kde.kirigami as Kirigami
 import Qt5Compat.GraphicalEffects
@@ -200,35 +199,6 @@ PlasmoidItem {
                 }
             }
 
-            Item {
-                anchors.fill: parent
-                visible: plasmoid.configuration.showPlaybackControls && interactionMouseArea.containsMouse && spotify.ready
-
-                Rectangle {
-                    anchors.fill: parent
-                    color: "#55000000"
-                }
-
-                RowLayout {
-                    anchors.centerIn: parent
-                    spacing: Kirigami.Units.smallSpacing
-
-                    RoundButton {
-                        text: "⏮"
-                        onClicked: spotify.previous()
-                    }
-
-                    RoundButton {
-                        text: spotify.playing ? "⏸" : "▶"
-                        onClicked: spotify.togglePlayback()
-                    }
-
-                    RoundButton {
-                        text: "⏭"
-                        onClicked: spotify.next()
-                    }
-                }
-            }
         }
 
         /* Song information */

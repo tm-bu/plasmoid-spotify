@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import QtQuick.Dialogs
 import org.kde.kirigami as Kirigami
 import org.kde.kcmutils as KCM
 
@@ -10,6 +11,10 @@ KCM.SimpleKCM {
     property int cfg_lyricsFontSizeDefault
     property bool cfg_alternativeLineHeightCalculationDefault
     property string cfg_lyricsFontFamilyDefault
+    property string cfg_lyricsHighlightColorDefault
+    property string cfg_lyricsCurrentLineColorDefault
+    property int cfg_lyricsOffsetMsDefault
+    property string cfg_lyricsScrollModeDefault
 
     property bool cfg_showAlbumCoverDefault
     property bool cfg_fetchAlbumCoverHttpsDefault
@@ -21,7 +26,6 @@ KCM.SimpleKCM {
     property int cfg_artistFontSizeDefault
     property string cfg_artistFontFamilyDefault
 
-    property bool cfg_showPlaybackControlsDefault
     property string cfg_leftClickActionDefault
     property string cfg_middleClickActionDefault
     property string cfg_rightClickActionDefault
@@ -33,6 +37,10 @@ KCM.SimpleKCM {
     property alias cfg_lyricsFontSize: lyricsFontSize.value
     property alias cfg_alternativeLineHeightCalculation: alternativeLineHeightCalculation.checked
     property alias cfg_lyricsFontFamily: lyricsFontFamily.currentText
+    property alias cfg_lyricsHighlightColor: lyricsHighlightColorField.text
+    property alias cfg_lyricsCurrentLineColor: lyricsCurrentLineColorField.text
+    property alias cfg_lyricsOffsetMs: lyricsOffsetMs.value
+    property alias cfg_lyricsScrollMode: lyricsScrollMode.currentValue
 
     property alias cfg_showAlbumCover: showAlbumCover.checked
     property alias cfg_fetchAlbumCoverHttps: fetchAlbumCoverHttps.checked
@@ -44,7 +52,6 @@ KCM.SimpleKCM {
     property alias cfg_artistFontSize: artistFontSize.value
     property alias cfg_artistFontFamily: artistFontFamily.currentText
 
-    property alias cfg_showPlaybackControls: showPlaybackControls.checked
     property alias cfg_leftClickAction: leftClickAction.currentValue
     property alias cfg_middleClickAction: middleClickAction.currentValue
     property alias cfg_rightClickAction: rightClickAction.currentValue
@@ -165,6 +172,118 @@ KCM.SimpleKCM {
                     stepSize: 1
                     Layout.alignment: Qt.AlignLeft
                 }
+            }
+
+            RowLayout {
+                Layout.alignment: Qt.AlignLeft
+                spacing: Kirigami.Units.smallSpacing
+                Layout.leftMargin: 20
+                enabled: showLyrics.checked
+
+                Label {
+                    text: "Current line color:"
+                }
+
+                TextField {
+                    id: lyricsCurrentLineColorField
+                    Layout.preferredWidth: 110
+                }
+
+                Rectangle {
+                    width: 18
+                    height: 18
+                    radius: 3
+                    color: lyricsCurrentLineColorField.text
+                    border.width: 1
+                    border.color: Kirigami.Theme.textColor
+                }
+
+                Button {
+                    text: "Pick"
+                    onClicked: lyricsCurrentLineColorDialog.open()
+                }
+            }
+
+            RowLayout {
+                Layout.alignment: Qt.AlignLeft
+                spacing: Kirigami.Units.smallSpacing
+                Layout.leftMargin: 20
+                enabled: showLyrics.checked
+
+                Label {
+                    text: "Non-current line color:"
+                }
+
+                TextField {
+                    id: lyricsHighlightColorField
+                    Layout.preferredWidth: 110
+                }
+
+                Rectangle {
+                    width: 18
+                    height: 18
+                    radius: 3
+                    color: lyricsHighlightColorField.text
+                    border.width: 1
+                    border.color: Kirigami.Theme.textColor
+                }
+
+                Button {
+                    text: "Pick"
+                    onClicked: lyricsHighlightColorDialog.open()
+                }
+            }
+
+            RowLayout {
+                Layout.alignment: Qt.AlignLeft
+                spacing: Kirigami.Units.smallSpacing
+                Layout.leftMargin: 20
+                enabled: showLyrics.checked
+
+                Label {
+                    text: "Lyrics offset (ms):"
+                }
+
+                SpinBox {
+                    id: lyricsOffsetMs
+                    from: -3000
+                    to: 3000
+                    stepSize: 50
+                }
+            }
+
+            RowLayout {
+                Layout.alignment: Qt.AlignLeft
+                spacing: Kirigami.Units.smallSpacing
+                Layout.leftMargin: 20
+                enabled: showLyrics.checked
+
+                Label {
+                    text: "Lyrics scroll:"
+                }
+
+                ComboBox {
+                    id: lyricsScrollMode
+                    textRole: "text"
+                    valueRole: "value"
+                    model: [
+                        { value: "smooth", text: "Smooth" },
+                        { value: "snap", text: "Snap" }
+                    ]
+                    Component.onCompleted: setComboIndexByValue(lyricsScrollMode, plasmoid.configuration.lyricsScrollMode)
+                }
+            }
+
+            ColorDialog {
+                id: lyricsCurrentLineColorDialog
+                selectedColor: lyricsCurrentLineColorField.text
+                onAccepted: lyricsCurrentLineColorField.text = selectedColor.toString()
+            }
+
+            ColorDialog {
+                id: lyricsHighlightColorDialog
+                selectedColor: lyricsHighlightColorField.text
+                onAccepted: lyricsHighlightColorField.text = selectedColor.toString()
             }
 
             Rectangle {
@@ -313,13 +432,6 @@ KCM.SimpleKCM {
                 level: 3
                 Layout.alignment: Qt.AlignLeft
                 Layout.topMargin: Kirigami.Units.largeSpacing
-            }
-
-            CheckBox {
-                id: showPlaybackControls
-                text: "Show playback controls on album cover hover"
-                Layout.alignment: Qt.AlignLeft
-                Layout.leftMargin: Kirigami.Units.largeSpacing
             }
 
             RowLayout {
